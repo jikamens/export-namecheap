@@ -66,7 +66,7 @@ for host in hosts:
     name_zone = zone.names[name]
 
     name_records = name_zone.records(record_type, create=True)
-    if record_type == "MX":
+    if record_type in ("MX", "SRV"):
         name_records.add( (int(mx_pref), str(address)) ) 
     else:
         name_records.add( str(address ))
