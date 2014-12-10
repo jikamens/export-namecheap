@@ -12,6 +12,7 @@ import dns.exception
 import dns.rdata
 import dns.rdataclass
 import dns.rdatatype
+import dns.resolver
 import dns.rrset
 import dns.zone
 import dns.name
@@ -42,9 +43,11 @@ hosts = hosts_doc.getElementsByTagName("host")
 
 
 #create SOA
-#exrds = dns.rdataset.from_text('IN', 'SOA', 300, 'ns1.register-server.com hostmaster.registrar-servers.com 2012031900 10001 10001 10001 3601')
-
-#zone._zone.replace_rdataset("@", exrds)
+answer = dns.resolver.query(domain, rdtype="SOA")
+rdataset = answer.rrset.to_rdataset()
+# for lack of a better value, use the refresh interval on the SOA as its TTL
+rdataset.ttl = rdataset[0].refresh
+zone._zone.replace_rdataset("@", rdataset)
 
 for host in hosts:
     #get all the properties out of the XML
